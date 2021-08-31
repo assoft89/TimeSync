@@ -1,0 +1,147 @@
+<DOCTYPE html>
+<html lang="ru">
+<body>
+<head>
+<script src="jquery-1.12.4.min.js"></script>
+<script src="moment.js"></script>
+<script src="api.js"></script>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+	h1 {
+		font-size: 30vw;
+		text-align: center;
+	}
+	button {
+	    width: 49%;
+		height: 60px;	
+	}
+	button.ready {
+		width: 99%;
+		height: 60px;
+	}
+</style>
+
+</head>
+<button class="ready btEditTime"  onclick=test2() >getTime</button>
+
+<h1 id="cnt1">?</h1>
+<div>
+	<button class='btEditTime' onclick=plus()>+</button>
+	<button class='btEditTime' id="bt1"onclick=minus()>-</button>
+	
+</div>
+<div>
+	<button class="ready btEditTime" onclick=ready()>Ready</button>
+
+</div>
+
+
+
+<script>
+function ready(){
+	$('.btEditTime').hide();	
+}
+
+function plus(){
+	ntp_c.offset = ntp_c.offset + 100;
+}
+function minus(){
+	ntp_c.offset = ntp_c.offset - 100;
+}
+
+
+var tPing,
+	tServ;
+
+	
+var ntp_corrected = false;
+
+var ntp_c;
+
+function ntp(t0, t1, t2, t3) {
+    return {
+        roundtripdelay: (t3 - t0) - (t2 - t1),
+        offset: ((t1 - t0) + (t2 - t3)) / 2
+    };
+}
+
+
+function test2(){
+tPing = (new Date).getTime(); 
+
+  $.ajax({
+   type: 'POST',
+   url:'',
+   data: '',
+   success: function(data, textStatus, request){
+   
+   				  tServ = (new Date(request.getResponseHeader('Date'))).getTime();
+				  
+				  var t1 = tServ,
+					t2 = tServ,
+					t3 = (new Date()).valueOf();
+					ntp_c = ntp(tPing, t1, t2, t3);
+					
+					console.log("NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
+					ntp_corrected = true;
+					
+  
+   },
+   error: function (request, textStatus, errorThrown) {
+        
+   }
+  });
+  
+}
+
+function test(){
+
+tPing = (new Date).getTime(); 
+
+      $.ajax({
+               url : "getDate.php",
+			   data: "" ,
+               type: "GET",
+			   timeout: 10000,
+               beforeSend: function(xhr){
+				  
+                  },
+                  success: function(result) { 
+				  tServ = parseInt(result);
+				  
+				  var t1 = tServ,
+					t2 = tServ,
+					t3 = (new Date()).valueOf();
+					ntp_c = ntp(tPing, t1, t2, t3);
+					
+					console.log("NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
+					ntp_corrected = true;
+                  }
+            });
+}
+
+
+
+function showTime(){
+
+	if (ntp_corrected){
+		var dt = (new Date).getTime() + ntp_c.offset;
+		cnt1.innerHTML = moment(dt).format("ss");
+	}else
+		cnt1.innerHTML = '0';
+	
+}
+
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+	setInterval(function(){
+		showTime();
+	},100);
+});
+	
+
+</script>
+</body>
