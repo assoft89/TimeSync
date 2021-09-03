@@ -1,57 +1,59 @@
 var varsLS = {
 	corr_ms : function (corr_ms){
+		if (typeof localStorage.corr_ms === 'undefined' || isNaN(parseInt(localStorage.corr_ms)))
+			localStorage.corr_ms = 50;
 		
+		var new_ms = parseInt($(ms).val());	
+
 		if (typeof corr_ms  === 'undefined' ){	
-			if (typeof localStorage.corr_ms === 'undefined')
-				return localStorage.corr_ms = 50;
-			else
-				return localStorage.corr_ms;
+				return parseInt(localStorage.corr_ms);
 		}
 		else
-			return localStorage.corr_ms = $(ms).val();
+			return localStorage.corr_ms = isNaN(new_ms) ? 50 : new_ms; 
 		},
 		offset : function(offset){
-			var res;
-			if (isNaN(offset) && typeof offset !== 'undefined')
-				offset = 0;
-				
-			if (typeof offset  === 'undefined' ){	
-				if (typeof localStorage.offset === 'undefined' || isNaN(offset))
-					res =  localStorage.offset = 0 ;
-				else
-					res =  localStorage.offset;
+			
+			if (typeof localStorage.offset === 'undefined' || isNaN(parseInt(localStorage.offset))){
+				localStorage.offset = 0;
+			}	
+			var res = parseInt(localStorage.offset);
+			var newofset = parseInt(offset);
+			
+			if (typeof offset  !== 'undefined' ){	
+				if (isNaN(newofset)){
+					newofset = 0;
+				}
+				res =  localStorage.offset = newofset;
 			}
-			else{
-				res =  localStorage.offset = offset;
-			}
+			
 			$(div_offset).text('offset: ' + res);
 			return res;
 		}
 }
 
+function onchange_ms(){
+	var ms = parseInt($(ms).val());
+	if (isNaN(ms))
+		ms = 50;
+	
+	varsLS.corr_ms(ms);
+}
+
+function plus(){
+	ntp_c.offset = ntp_c.offset + varsLS.corr_ms();
+	varsLS.offset(ntp_c.offset);
+}
+function minus(){
+		
+	ntp_c.offset = ntp_c.offset -  varsLS.corr_ms();
+	varsLS.offset(ntp_c.offset);
+}
+
+
 function ready(){
 	$('.btEditTime').hide();	
 }
 
-function plus(){
-	
-	var div_ms = parseInt($(ms).val());
-	if (isNaN(div_ms))
-		$(ms).val(50);
-		
-	
-
-	ntp_c.offset = ntp_c.offset + parseInt($(ms).val());
-	varsLS.offset(ntp_c.offset);
-}
-function minus(){
-	var div_ms = parseInt($(ms).val());
-	if (isNaN(div_ms))
-		$(ms).val(50);
-		
-	ntp_c.offset = ntp_c.offset -  parseInt($(ms).val());
-	varsLS.offset(ntp_c.offset);
-}
 
 
 var tPing,
@@ -87,9 +89,6 @@ tPing = (new Date).getTime();
 
 }
 
-function onchange_ms(){
-	varsLS.corr_ms($(ms).val());
-}
 
 function test2(){
 tPing = (new Date).getTime(); 
