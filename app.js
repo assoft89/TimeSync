@@ -1,8 +1,9 @@
 var varsLS = {
 	corr_ms : function (corr_ms){
+		
 		if (typeof corr_ms  === 'undefined' ){	
 			if (typeof localStorage.corr_ms === 'undefined')
-				return localStorage.corr_ms = $(ms).val() ;
+				return localStorage.corr_ms = 50;
 			else
 				return localStorage.corr_ms;
 		}
@@ -10,14 +11,18 @@ var varsLS = {
 			return localStorage.corr_ms = $(ms).val();
 		},
 		offset : function(offset){
-		if (typeof offset  === 'undefined' ){	
-			if (typeof localStorage.offset === 'undefined')
-				return localStorage.offset = 0 ;
+			var res;
+			if (typeof offset  === 'undefined' ){	
+				if (typeof localStorage.offset === 'undefined')
+					res =  localStorage.offset = 0 ;
+				else
+					res =  localStorage.offset;
+			}
 			else
-				return localStorage.offset;
-		}
-		else
-			return localStorage.offset = offset;		
+				res =  localStorage.offset = offset;
+	
+			$(div_offset).text('offset: ' + res);
+			return res;
 		}
 }
 

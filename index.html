@@ -11,6 +11,7 @@
 	h1 {
 		font-size: 30vw;
 		text-align: center;
+		margin: 40px 0
 	}
 	button {
 	    width: 49%;
@@ -21,10 +22,9 @@
 		height: 80px;
 		margin-top: 10px;
 	}
-	#tVer {
-		text-align: end;
-		font-size: 0.8em;
-	}
+
+
+	
 	
 	.corr_ms_bt {
 		font-size: 2em;
@@ -36,14 +36,33 @@
 		font-size: 1.4em;
 		text-align: center;
 	}
+	.top {
+		display: flex;
+		
+	}
 	
+	#div_offset {
+		width:48%;
+		font-size: 0.8em;
+
+	}	
+	#tVer {
+		width:48%;
+		font-size: 0.8em;
+		text-align: end;
+
+	}	
 	
 </style>
 
 </head>
-<div id="tVer">ver</div>
+<div class="top">
+	<div id="div_offset"></div>
+	<div id="tVer">ver</div>
+</div>
 
-<button class="ready btEditTime"  onclick=local() >getTime</button>
+
+<button class="ready btEditTime"  onclick=local() style="display: none;">getTime</button>
 
 <h1 id="cnt1">?</h1>
 
@@ -59,7 +78,7 @@
 
 
 <script>
-    ver = 'v.0.3';
+    ver = 'v.0.5';
 	
 	function addScript(src){
 		var script = document.createElement('script');
@@ -75,13 +94,16 @@
 	function app_ready(){
 		$(tVer).text(ver);
 		$(ms).val(varsLS.corr_ms());
+		$(div_offset).text(varsLS.offset());
+		local();
+		
 		console.log('app_ready ' + ver);
 
 	}
 	
 	$(document).ready(function() {
 		console.log('doc Ready');
-		
+
 		setInterval(function(){
 			showTime();
 		},100);
