@@ -12,7 +12,7 @@ var varsLS = {
 		},
 		offset : function(offset){
 			var res;
-			if (isNaN(offset))
+			if (isNaN(offset) && typeof offset !== 'undefined')
 				offset = 0;
 				
 			if (typeof offset  === 'undefined' ){	
