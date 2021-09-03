@@ -43,11 +43,11 @@
 </head>
 <div id="tVer">ver</div>
 
-<button class="ready btEditTime"  onclick=test2() >getTime</button>
+<button class="ready btEditTime"  onclick=local() >getTime</button>
 
 <h1 id="cnt1">?</h1>
 
-<input id="ms" class="corr_ms" placeholder="time ms corr" value=50>
+<input id="ms" class="corr_ms" placeholder="time ms corr" value='' oninput=onchange_ms()>
 
 <div class ="btEditTime">
 	<button class=' corr_ms_bt' id="bt1"onclick=minus()>-</button>
@@ -59,7 +59,7 @@
 
 
 <script>
-    ver = 'v.0.2';
+    ver = 'v.0.3';
 	
 	function addScript(src){
 		var script = document.createElement('script');
@@ -73,17 +73,19 @@
     addScript("app.js?v=" + ver);
 
 	function app_ready(){
-		$(tVer).text(ver)
+		$(tVer).text(ver);
+		$(ms).val(varsLS.corr_ms());
 		console.log('app_ready ' + ver);
+
+	}
+	
+	$(document).ready(function() {
+		console.log('doc Ready');
 		
 		setInterval(function(){
 			showTime();
 		},100);
-	
-	}
-	
-document.addEventListener("DOMContentLoaded", function(event) { 
-});	
+	});
 
 </script>
 

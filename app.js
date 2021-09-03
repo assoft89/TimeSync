@@ -1,12 +1,37 @@
+var varsLS = {
+	corr_ms : function (corr_ms){
+		if (typeof corr_ms  === 'undefined' ){	
+			if (typeof localStorage.corr_ms === 'undefined')
+				return localStorage.corr_ms = $(ms).val() ;
+			else
+				return localStorage.corr_ms;
+		}
+		else
+			return localStorage.corr_ms = $(ms).val();
+		},
+		offset : function(offset){
+		if (typeof offset  === 'undefined' ){	
+			if (typeof localStorage.offset === 'undefined')
+				return localStorage.offset = 0 ;
+			else
+				return localStorage.offset;
+		}
+		else
+			return localStorage.offset = offset;		
+		}
+}
+
 function ready(){
 	$('.btEditTime').hide();	
 }
 
 function plus(){
 	ntp_c.offset = ntp_c.offset + parseInt($(ms).val());
+	varsLS.offset(ntp_c.offset);
 }
 function minus(){
 	ntp_c.offset = ntp_c.offset - parseInt($(ms).val());
+	varsLS.offset(ntp_c.offset);
 }
 
 
@@ -25,32 +50,53 @@ function ntp(t0, t1, t2, t3) {
     };
 }
 
+function local(){
+tPing = (new Date).getTime(); 
+  tServ = (new Date).getTime();
+  
+  var t1 = tServ,
+	t2 = tServ,
+	t3 = (new Date()).valueOf();
+	ntp_c = ntp(tPing, t1, t2, t3);
+	
+	varsLS.corr_ms($(ms).val());
+	ntp_c.offset = parseInt(varsLS.offset());
+	
+	console.log("Local = NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
+	ntp_corrected = true;		
+
+
+}
+
+function onchange_ms(){
+	varsLS.corr_ms($(ms).val());
+}
 
 function test2(){
 tPing = (new Date).getTime(); 
-
-  $.ajax({
-   type: 'GET',
-   url:'',
-   data: {"noCache":(new Date).getTime()},
-   success: function(data, textStatus, request){
-   
-   				  tServ = (new Date(request.getResponseHeader('Date'))).getTime();
-				  
-				  var t1 = tServ,
-					t2 = tServ,
-					t3 = (new Date()).valueOf();
-					ntp_c = ntp(tPing, t1, t2, t3);
-					
-					console.log("NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
-					ntp_corrected = true;
-					
-  
-   },
-   error: function (request, textStatus, errorThrown) {
-        
-   }
-  });
+	
+	  $.ajax({
+	   type: 'GET',
+	   url:'',
+	   data: {"noCache":(new Date).getTime()},
+	   success: function(data, textStatus, request){
+	   
+					  tServ = (new Date(request.getResponseHeader('Date'))).getTime();
+					  
+					  var t1 = tServ,
+						t2 = tServ,
+						t3 = (new Date()).valueOf();
+						ntp_c = ntp(tPing, t1, t2, t3);
+						
+						console.log("NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
+						ntp_corrected = true;
+						
+	  
+	   },
+	   error: function (request, textStatus, errorThrown) {
+			
+	   }
+	  });
   
 }
 
