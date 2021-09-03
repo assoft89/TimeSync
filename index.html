@@ -3,7 +3,6 @@
 <head>
 <script src="jquery-1.12.4.min.js"></script>
 <script src="moment.js"></script>
-<script src="api.js"></script>
 
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,132 +14,75 @@
 	}
 	button {
 	    width: 49%;
-		height: 60px;	
+		height: 80px;	
 	}
 	button.ready {
 		width: 99%;
-		height: 60px;
+		height: 80px;
+		margin-top: 10px;
 	}
+	#tVer {
+		text-align: end;
+		font-size: 0.8em;
+	}
+	
+	.corr_ms_bt {
+		font-size: 2em;
+	}
+	.corr_ms {
+		width: 100%;
+		height: 30px;
+		margin-bottom: 10px;
+		font-size: 1.4em;
+		text-align: center;
+	}
+	
+	
 </style>
 
 </head>
+<div id="tVer">ver</div>
+
 <button class="ready btEditTime"  onclick=test2() >getTime</button>
 
 <h1 id="cnt1">?</h1>
-<div>
-	<button class='btEditTime' onclick=plus()>+</button>
-	<button class='btEditTime' id="bt1"onclick=minus()>-</button>
-	
-</div>
-<div>
-	<button class="ready btEditTime" onclick=ready()>Ready</button>
+
+<input id="ms" class="corr_ms" placeholder="time ms corr" value=50>
+
+<div class ="btEditTime">
+	<button class=' corr_ms_bt' id="bt1"onclick=minus()>-</button>
+	<button class='corr_ms_bt' onclick=plus()>+</button>
+	<button class="ready" onclick=ready()>Ready</button>
 
 </div>
 
 
 
 <script>
-function ready(){
-	$('.btEditTime').hide();	
-}
-
-function plus(){
-	ntp_c.offset = ntp_c.offset + 100;
-}
-function minus(){
-	ntp_c.offset = ntp_c.offset - 100;
-}
-
-
-var tPing,
-	tServ;
-
+    ver = 'v.0.1';
 	
-var ntp_corrected = false;
+	function addScript(src){
+		var script = document.createElement('script');
+		script.src = src;
+		script.async = false; // false --- чтобы гарантировать порядок
+		//script.onerror = onloadWidgetErr;
+		script.onload = app_ready;
+		document.head.appendChild(script);   
+	}
 
-var ntp_c;
+    addScript("app.js?v=" + ver);
 
-function ntp(t0, t1, t2, t3) {
-    return {
-        roundtripdelay: (t3 - t0) - (t2 - t1),
-        offset: ((t1 - t0) + (t2 - t3)) / 2
-    };
-}
-
-
-function test2(){
-tPing = (new Date).getTime(); 
-
-  $.ajax({
-   type: 'GET',
-   url:'',
-   data: {"noCache":(new Date).getTime()},
-   success: function(data, textStatus, request){
-   
-   				  tServ = (new Date(request.getResponseHeader('Date'))).getTime();
-				  
-				  var t1 = tServ,
-					t2 = tServ,
-					t3 = (new Date()).valueOf();
-					ntp_c = ntp(tPing, t1, t2, t3);
-					
-					console.log("NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
-					ntp_corrected = true;
-					
-  
-   },
-   error: function (request, textStatus, errorThrown) {
-        
-   }
-  });
-  
-}
-
-function test(){
-
-tPing = (new Date).getTime(); 
-
-      $.ajax({
-               url : "getDate.php",
-			   data: "" ,
-               type: "GET",
-			   timeout: 10000,
-               beforeSend: function(xhr){
-				  
-                  },
-                  success: function(result) { 
-				  tServ = parseInt(result);
-				  
-				  var t1 = tServ,
-					t2 = tServ,
-					t3 = (new Date()).valueOf();
-					ntp_c = ntp(tPing, t1, t2, t3);
-					
-					console.log("NTP delay:", ntp_c.roundtripdelay, "NTP offset:", ntp_c.offset, "corrected: ", (new Date(t3 + ntp_c.offset))); 
-					ntp_corrected = true;
-                  }
-            });
-}
-
-
-
-function showTime(){
-
-	if (ntp_corrected){
-		var dt = (new Date).getTime() + ntp_c.offset;
-		cnt1.innerHTML = moment(dt).format("ss");
-	}else
-		cnt1.innerHTML = '0';
+	function app_ready(){
+		$(tVer).text(ver)
+		console.log('app_ready ' + ver);
+	}
 	
-}
-
-
 document.addEventListener("DOMContentLoaded", function(event) { 
 	setInterval(function(){
 		showTime();
 	},100);
-});
-	
+});	
 
 </script>
+
 </body>
