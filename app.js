@@ -12,15 +12,18 @@ var varsLS = {
 		},
 		offset : function(offset){
 			var res;
+			if (isNaN(offset))
+				offset = 0;
+				
 			if (typeof offset  === 'undefined' ){	
-				if (typeof localStorage.offset === 'undefined')
+				if (typeof localStorage.offset === 'undefined' || isNaN(offset))
 					res =  localStorage.offset = 0 ;
 				else
 					res =  localStorage.offset;
 			}
-			else
+			else{
 				res =  localStorage.offset = offset;
-	
+			}
 			$(div_offset).text('offset: ' + res);
 			return res;
 		}
@@ -31,11 +34,22 @@ function ready(){
 }
 
 function plus(){
+	
+	var div_ms = parseInt($(ms).val());
+	if (isNaN(div_ms))
+		$(ms).val(50);
+		
+	
+
 	ntp_c.offset = ntp_c.offset + parseInt($(ms).val());
 	varsLS.offset(ntp_c.offset);
 }
 function minus(){
-	ntp_c.offset = ntp_c.offset - parseInt($(ms).val());
+	var div_ms = parseInt($(ms).val());
+	if (isNaN(div_ms))
+		$(ms).val(50);
+		
+	ntp_c.offset = ntp_c.offset -  parseInt($(ms).val());
 	varsLS.offset(ntp_c.offset);
 }
 

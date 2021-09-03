@@ -78,7 +78,7 @@
 
 
 <script>
-    ver = 'v.0.5';
+    ver = 'v.0.6;
 	
 	function addScript(src){
 		var script = document.createElement('script');
@@ -98,15 +98,17 @@
 		local();
 		
 		console.log('app_ready ' + ver);
+		
+		setInterval(function(){
+			showTime();
+		},100);
 
 	}
 	
 	$(document).ready(function() {
 		console.log('doc Ready');
 
-		setInterval(function(){
-			showTime();
-		},100);
+
 	});
 
 </script>
